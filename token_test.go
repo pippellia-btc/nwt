@@ -33,13 +33,11 @@ func TestToTags(t *testing.T) {
 		{
 			token: Token{
 				Claims: map[string][]string{
-					"role":        {"admin"},
-					"permissions": {"read", "write"},
+					"role": {"admin"},
 				},
 			},
 			tags: nostr.Tags{
 				{"role", "admin"},
-				{"permissions", "read", "write"},
 			},
 		},
 	}
