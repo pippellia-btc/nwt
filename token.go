@@ -37,6 +37,19 @@ type Token struct {
 	Claims map[string][]string
 }
 
+func (t Token) String() string {
+	return fmt.Sprintf("Token\n"+
+		"\tID: %s\n"+
+		"\tIssuer: %s\n"+
+		"\tSubject: %s\n"+
+		"\tAudience: %v\n"+
+		"\tIssuedAt: %s\n"+
+		"\tExpiration: %s\n"+
+		"\tNotBefore: %s\n"+
+		"\tClaims: %v}",
+		t.ID, t.Issuer, t.Subject, t.Audience, t.IssuedAt, t.Expiration, t.NotBefore, t.Claims)
+}
+
 // IsActive checks whether the token is currently active.
 // It's a shorthand for Token.IsActiveAt(time.Now(), skew).
 func (t Token) IsActive(skew time.Duration) bool {
@@ -103,7 +116,7 @@ func ParseToken(event *nostr.Event) (Token, error) {
 		ID:         event.ID,
 		Issuer:     event.PubKey,
 		Subject:    event.PubKey,
-		IssuedAt:   event.CreatedAt.Time(),
+		IssuedAt:   event.CreatedAt.Time().UTC(),
 		Expiration: MaxTime,
 		NotBefore:  MinTime,
 	}
