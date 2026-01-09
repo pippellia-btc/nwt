@@ -9,9 +9,6 @@ import (
 	"github.com/nbd-wtf/go-nostr"
 )
 
-// Kind is the Nostr event kind for Nostr Web Tokens (NWT).
-const Kind = 27519
-
 // MaxClaims defines the maximum number of claims allowed in a NWT, to prevent abuse.
 const MaxClaims = 512
 

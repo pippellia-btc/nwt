@@ -11,6 +11,9 @@ import (
 	"github.com/nbd-wtf/go-nostr"
 )
 
+// Kind is the Nostr event kind for Nostr Web Tokens (NWT).
+const Kind = 27519
+
 // Parsing errors
 var (
 	ErrMissingHeader    = errors.New("missing Authorization header")
@@ -29,6 +32,10 @@ var (
 // ExtractEventHTTP extracts the Nostr event from the Authorization header
 // of the HTTP request without performing any validation.
 func ExtractEventHTTP(r *http.Request) (*nostr.Event, error) {
+	if r == nil {
+		return nil, errors.New("request is nil")
+	}
+
 	auth := r.Header.Get("Authorization")
 	if auth == "" {
 		return nil, ErrMissingHeader
@@ -58,6 +65,10 @@ func ExtractEventHTTP(r *http.Request) (*nostr.Event, error) {
 // ValidateEvent checks whether the given Nostr event is a valid NWT event.
 // It verifies the event kind, created at, ID, and signature but doesn't validate the token claims themselves.
 func ValidateEvent(e *nostr.Event) error {
+	if e == nil {
+		return errors.New("event is nil")
+	}
+
 	if e.Kind != Kind {
 		return ErrInvalidEventKind
 	}
