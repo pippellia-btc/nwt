@@ -1,6 +1,7 @@
 package nwt
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 	"time"
@@ -10,6 +11,9 @@ import (
 
 // Kind is the Nostr event kind for Nostr Web Tokens (NWT).
 const Kind = 27519
+
+// MaxClaims defines the maximum number of claims allowed in a NWT, to prevent abuse.
+const MaxClaims = 512
 
 // Registered claim names as per NWT specification.
 const (
@@ -111,6 +115,10 @@ func (t Token) ToTags() nostr.Tags {
 // ParseToken parses the Nostr event into a [Token] struct, without performing any validation.
 // To validate the token, use a [Validator].
 func ParseToken(event *nostr.Event) (Token, error) {
+	if len(event.Tags) > MaxClaims {
+		return Token{}, errors.New("too many claims in event")
+	}
+
 	var err error
 	token := Token{
 		ID:         event.ID,
