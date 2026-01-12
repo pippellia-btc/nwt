@@ -2,6 +2,7 @@ package nwt
 
 import (
 	"fmt"
+	"net/http"
 	"strconv"
 	"time"
 
@@ -106,6 +107,22 @@ func (t Token) ToTags() nostr.Tags {
 		tags = append(tags, tag)
 	}
 	return tags
+}
+
+// Parse a [Token] from the event found in the Authorization header of the request.
+// It validates the event, but doesn't validate the token's claims.
+// To validate the token, use a [Validator].
+func Parse(r *http.Request) (Token, error) {
+	event, err := ExtractEventHTTP(r)
+	if err != nil {
+		return Token{}, err
+	}
+
+	if err := ValidateEvent(event); err != nil {
+		return Token{}, err
+	}
+
+	return ParseToken(event)
 }
 
 // ParseToken parses the Nostr event into a [Token] struct, without performing any validation.
