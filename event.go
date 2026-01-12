@@ -81,6 +81,10 @@ func ValidateEvent(e *nostr.Event) error {
 		return fmt.Errorf("%w: created at exceeds maximum time", ErrInvalidEventCreatedAt)
 	}
 
+	if len(e.Tags) > MaxClaims {
+		return errors.New("too many claims in event")
+	}
+
 	if !e.CheckID() {
 		return ErrInvalidEventID
 	}
